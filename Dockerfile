@@ -2,9 +2,7 @@ FROM ubuntu:16.04
 
 MAINTAINER Kyle Hernandez <kmhernan@uchicago.edu>
 
-ENV DEBIAN_FRONTEND=noninteractive
-
-RUN apt-get -y update && apt-get install -y --force-yes \
+RUN DEBIAN_FRONTEND=noninteractive apt-get -y update && apt-get install -y --force-yes \
         build-essential \
         python3.5 \
         python3.5-dev \
@@ -12,25 +10,26 @@ RUN apt-get -y update && apt-get install -y --force-yes \
         wget \
         unzip \
         openjdk-8-jre-headless \
+        git
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-WORKDIR /opt
-
 ## Install trimmomatic to /opt/Trimmomatic-0.38/trimmomatic-0.38.jar
-RUN wget http://www.usadellab.org/cms/uploads/supplementary/Trimmomatic/Trimmomatic-0.38.zip \
+RUN cd /opt \
+    && wget http://www.usadellab.org/cms/uploads/supplementary/Trimmomatic/Trimmomatic-0.38.zip \
     && unzip Trimmomatic-0.38.zip \
     && rm Trimmomatic-0.38.zip
 
 ## Install python package
-WORKDIR /opt
-RUN mkdir /opt/gdc-rnaseq-tool
-WORKDIR /opt/gdc-rnaseq-tool
+RUN mkdir /opt/gdc-rnaseq-tool \
+    && /opt/gdc-rnaseq-tool
 ADD utils /opt/gdc-rnaseq-tool/
 ADD LICENSE /opt/gdc-rnaseq-tool/
 
 ## Install fqvendorfail
-WORKDIR /opt
-RUN git clone git@github.com:kmhernan/fqvendorfail.git \
+RUN cd /opt \
+    && git clone https://github.com/kmhernan/fqvendorfail.git \
     && cd fqvendorfail \
     && make
+
+WORKDIR /opt
