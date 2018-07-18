@@ -22,7 +22,7 @@ RUN cd /opt \
 
 ## Install python package
 RUN mkdir /opt/gdc-rnaseq-tool \
-    && /opt/gdc-rnaseq-tool
+    && cd /opt/gdc-rnaseq-tool
 ADD utils /opt/gdc-rnaseq-tool/
 ADD LICENSE /opt/gdc-rnaseq-tool/
 
