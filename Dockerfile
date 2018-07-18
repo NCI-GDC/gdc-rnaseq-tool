@@ -29,4 +29,8 @@ WORKDIR /opt/gdc-rnaseq-tool
 ADD utils /opt/gdc-rnaseq-tool/
 ADD LICENSE /opt/gdc-rnaseq-tool/
 
+## Install fqvendorfail
 WORKDIR /opt
+RUN git clone git@github.com:kmhernan/fqvendorfail.git \
+    && cd fqvendorfail \
+    && make
