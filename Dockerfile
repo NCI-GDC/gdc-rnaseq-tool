@@ -22,10 +22,9 @@ RUN cd /opt \
     && rm Trimmomatic-0.38.zip
 
 ## Install python package
-RUN mkdir /opt/gdc-rnaseq-tool \
-    && cd /opt/gdc-rnaseq-tool
-ADD utils /opt/gdc-rnaseq-tool/
+COPY . /opt/gdc-rnaseq-tool/
 ADD LICENSE /opt/gdc-rnaseq-tool/
+RUN pip3 install /opt/gdc-rnaseq-tool
 
 ## Install fqvendorfail
 RUN cd /opt \
