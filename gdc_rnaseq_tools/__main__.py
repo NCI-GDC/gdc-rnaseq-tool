@@ -5,7 +5,7 @@
 import argparse
 
 import gdc_rnaseq_tools.merge_counts as merge_star_gene_counts
-#import gdc_rnaseq_tools.merge_junctions as merge_star_junctions
+import gdc_rnaseq_tools.merge_junctions as merge_star_junctions
 
 from gdc_rnaseq_tools.utils import get_logger
 
@@ -22,20 +22,23 @@ def load_args():
 
     # Merge star counts
     gcounts = sp.add_parser("merge_star_gene_counts",
-        description="Formats and merges STAR gene counts files.")
+                            description="Formats and merges STAR gene " +
+                                        "counts files.")
     gcounts.add_argument("-i", "--input", action='append', required=True,
-        help="Path to STAR gene counts file. Use one or more times.")
+                         help="Path to STAR gene counts file. Use one or " +
+                              "more times.")
     gcounts.add_argument("-o", "--output", required=True,
-        help="Path to the merged/formatted output file.")
+                         help="Path to the merged/formatted output file.")
 
     # Merge junctions
     jmerge = sp.add_parser("merge_star_junctions",
-        description="Formats and merges STAR junction count files " +
-                    "from the same sample.")
+                           description="Formats and merges STAR junction " +
+                                       "count files from the same sample.")
     jmerge.add_argument("-i", "--input", action='append', required=True,
-        help="Path to STAR junction counts file. Use one or more times.")
+                        help="Path to STAR junction counts file. Use one " +
+                             "or more times.")
     jmerge.add_argument("-o", "--output", required=True,
-        help="Path to the merged/formatted output file.")
+                        help="Path to the merged/formatted output file.")
 
     return parser.parse_args()
 

@@ -32,7 +32,7 @@ def process_files(args, logger):
 
             logger.info("Writing merged STAR gene counts to {0}.".format(
                         args.output))
-            # Merge and write 
+            # Merge and write
             for gene, counts in merge_star_counts(dic):
                 row = [gene] + [str(i) for i in counts]
                 o.write('\t'.join(row) + '\n')
@@ -53,7 +53,7 @@ def process_files(args, logger):
 
 def load_star_file(fil, dic):
     """
-    Load star counts file into a dictionary. 
+    Load star counts file into a dictionary.
     :param fil: path to STAR counts file to load
     :param dic: ``OrderedDict`` to load file to
     :returns: updated ``OrderedDict``
@@ -79,7 +79,7 @@ def merge_star_counts(dic):
     for key in dic:
         counts = [0 for i in range(3)]
         for rec in dic[key]:
-            for i,v in enumerate(rec):
+            for i, v in enumerate(rec):
                 counts[i] += v
         yield key, counts
 
