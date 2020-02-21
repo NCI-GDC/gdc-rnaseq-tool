@@ -7,29 +7,35 @@ from tests import FakeArgs
 from gdc_rnaseq_tools.merge_junctions import (
     StarJunctionRecord,
     load_junction_file,
-    main)
+    main,
+)
 
 
 class TestMergeStarJunctions(unittest.TestCase):
-    star_junctions_1 = os.path.join(os.path.dirname(__file__),
-                                 'etc/test_star_junctions_input_1.tsv.gz')
-    star_junctions_2 = os.path.join(os.path.dirname(__file__),
-                                 'etc/test_star_junctions_input_2.tsv.gz')
-    exp_star_1 = os.path.join(os.path.dirname(__file__),
-                              'etc/exp_star_junctions_output_1.tsv.gz')
-    exp_star_1_2 = os.path.join(os.path.dirname(__file__),
-                                'etc/exp_star_junctions_output_1_2.tsv.gz')
-    out_test_pfx = os.path.join(os.path.dirname(__file__),
-                                'etc/test_star_merge_junctions_out')
+    star_junctions_1 = os.path.join(
+        os.path.dirname(__file__), "etc/test_star_junctions_input_1.tsv.gz"
+    )
+    star_junctions_2 = os.path.join(
+        os.path.dirname(__file__), "etc/test_star_junctions_input_2.tsv.gz"
+    )
+    exp_star_1 = os.path.join(
+        os.path.dirname(__file__), "etc/exp_star_junctions_output_1.tsv.gz"
+    )
+    exp_star_1_2 = os.path.join(
+        os.path.dirname(__file__), "etc/exp_star_junctions_output_1_2.tsv.gz"
+    )
+    out_test_pfx = os.path.join(
+        os.path.dirname(__file__), "etc/test_star_merge_junctions_out"
+    )
     to_remove = []
 
     def test_star_junction_record(self):
         """
         Tests the `StarJunctionRecord` class. 
         """
-        line = "\t".join(['chr1', '100', '200', '1', '1', '1', '1', '0', '23'])
+        line = "\t".join(["chr1", "100", "200", "1", "1", "1", "1", "0", "23"])
         rec = StarJunctionRecord.from_line(line)
-        self.assertEqual('chr1', rec.chromosome)
+        self.assertEqual("chr1", rec.chromosome)
         self.assertEqual(100, rec.intron_first)
         self.assertEqual(200, rec.intron_last)
         self.assertEqual(1, rec.strand)
@@ -38,18 +44,18 @@ class TestMergeStarJunctions(unittest.TestCase):
         self.assertEqual(1, rec.n_unique_mapped)
         self.assertEqual(0, rec.n_multi_mapped)
         self.assertEqual(23, rec.max_splice_overhang)
-        self.assertEqual(('chr1', 100, 200, 1, 1, 1), rec.key)
+        self.assertEqual(("chr1", 100, 200, 1, 1, 1), rec.key)
 
     def test_star_junction_record_funcs(self):
         """
         Tests the `StarJunctionRecord` class functions. 
         """
-        line1 = "\t".join(['chr1', '100', '200', '1', '1', '1', '1', '0', '23'])
-        line2 = "\t".join(['chr1', '100', '200', '1', '1', '1', '3', '2', '20'])
+        line1 = "\t".join(["chr1", "100", "200", "1", "1", "1", "1", "0", "23"])
+        line2 = "\t".join(["chr1", "100", "200", "1", "1", "1", "3", "2", "20"])
         rec1 = StarJunctionRecord.from_line(line1)
         rec2 = StarJunctionRecord.from_line(line2)
         rec1 += rec2
-        self.assertEqual('chr1', rec1.chromosome)
+        self.assertEqual("chr1", rec1.chromosome)
         self.assertEqual(100, rec1.intron_first)
         self.assertEqual(200, rec1.intron_last)
         self.assertEqual(1, rec1.strand)
@@ -58,9 +64,9 @@ class TestMergeStarJunctions(unittest.TestCase):
         self.assertEqual(4, rec1.n_unique_mapped)
         self.assertEqual(2, rec1.n_multi_mapped)
         self.assertEqual(23, rec1.max_splice_overhang)
-        self.assertEqual(('chr1', 100, 200, 1, 1, 1), rec1.key)
+        self.assertEqual(("chr1", 100, 200, 1, 1, 1), rec1.key)
 
-        line3 = "\t".join(['chr1', '200', '300', '1', '1', '1', '1', '0', '23'])
+        line3 = "\t".join(["chr1", "200", "300", "1", "1", "1", "1", "0", "23"])
         rec3 = StarJunctionRecord.from_line(line3)
         with self.assertRaises(AssertionError):
             rec1 += rec3
@@ -99,8 +105,8 @@ class TestMergeStarJunctions(unittest.TestCase):
         exp_keys = sorted(set([dat1_1, dat1_2, dat2_1, dat2_2, dat2_3]))
         self.assertEqual(exp_keys, sorted(list(dic.keys())))
 
-        self.assertEqual(2,dic[dat1_1].n_unique_mapped)
-        self.assertEqual(0,dic[dat1_1].n_multi_mapped)
+        self.assertEqual(2, dic[dat1_1].n_unique_mapped)
+        self.assertEqual(0, dic[dat1_1].n_multi_mapped)
         self.assertEqual(23, dic[dat1_1].max_splice_overhang)
 
         self.assertEqual(3, dic[dat1_2].n_unique_mapped)
@@ -118,11 +124,12 @@ class TestMergeStarJunctions(unittest.TestCase):
         """
         args = FakeArgs()
         args.input = [self.star_junctions_1]
-        args.output = self.out_test_pfx + '.1.tsv.gz'
+        args.output = self.out_test_pfx + ".1.tsv.gz"
         self.to_remove.append(args.output)
         main(args)
-        with gzip.open(self.exp_star_1, 'rt') as fh, gzip.open(
-                args.output, 'rt') as ofh:
+        with gzip.open(self.exp_star_1, "rt") as fh, gzip.open(
+            args.output, "rt"
+        ) as ofh:
             exp = fh.read()
             found = ofh.read()
             self.assertEqual(exp, found)
@@ -134,11 +141,12 @@ class TestMergeStarJunctions(unittest.TestCase):
         """
         args = FakeArgs()
         args.input = [self.star_junctions_1, self.star_junctions_2]
-        args.output = self.out_test_pfx + '.1_2.tsv.gz'
+        args.output = self.out_test_pfx + ".1_2.tsv.gz"
         self.to_remove.append(args.output)
         main(args)
-        with gzip.open(self.exp_star_1_2, 'rt') as fh, gzip.open(
-                args.output, 'rt') as ofh:
+        with gzip.open(self.exp_star_1_2, "rt") as fh, gzip.open(
+            args.output, "rt"
+        ) as ofh:
             exp = fh.read()
             found = ofh.read()
             self.assertEqual(exp, found)

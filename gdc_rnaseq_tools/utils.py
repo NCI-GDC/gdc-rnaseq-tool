@@ -18,7 +18,8 @@ def get_logger(name):
     handler = logging.StreamHandler()
     handler.setLevel(logging.INFO)
     formatter = logging.Formatter(
-        '[%(asctime)s][%(name)12s][%(levelname)7s] %(message)s')
+        "[%(asctime)s][%(name)12s][%(levelname)7s] %(message)s"
+    )
     handler.setFormatter(formatter)
     logger.addHandler(handler)
     return logger
@@ -32,7 +33,7 @@ def get_open_function(fil):
     :param fil: file path
     :return: open function
     """
-    if fil.endswith('.gz'):
+    if fil.endswith(".gz"):
         return gzip.open
     else:
         return open
