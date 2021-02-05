@@ -84,7 +84,7 @@ requirements: init-venv
 
 build: build-docker
 
-build-docker:
+build-docker: docker-login
 	@echo
 	@echo -- Building docker --
 	python3 setup.py build
