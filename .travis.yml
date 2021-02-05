@@ -1,21 +1,16 @@
 language: python
 python:
 - '3.6'
-
 services: docker
-
 git:
   depth: false
-
 install: make build
-
 stages:
 - name: test
 - name: publish-release
   if: branch = main AND type != pull_request
 - name: publish-staging
   if: branch != main AND type != pull_request
-
 jobs:
   include:
   - stage: test
@@ -36,3 +31,5 @@ jobs:
 env:
   global:
   - BRANCH_NAME=${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH}
+  - secure: 58CLVEm8Z+NYzfu+GVQJI41PIIhijQbSwpon7BbowO1cjYNriFLlsdpgJ0/uG9lgPc0vgcKm2UwipJ+2F19HVwjId5hrRGp/eK/R3IylHqExE7ma3KwbFIuAPRdUtq2emPlJ0JZJXuU6nXUR+32gSDYvyuxBpZobdH8qKNCxZ4kYXLCo0x8hBKkT3MdI9GGS/3ZatXZvx4S4RzGS+TiqJVHWjSRndp+2aUc3CBf4E/ey/8JZWp2oNP4PN+Fl7bNIeDCKts9+E6hCy75Kp2lueUJ9ShIb6CtI3eFfls9jeujJFx0brSp5a4sfcqv8mRYV0qjBioZOB8mka6RzhRRjno0A3O7wrEu0CCvTaclY9rDWvbPScxfLUkIU07gSqdFieIpjGnwsZWspcD7T8Y8nVvngQqLM+BQsmNmDk64PqYJcNPbvHjACjxKvJMa0mwY5dawUGhN0+UD0RNNFrpS7qgTSU8gd4hmJmnThqg9N87NX/2292+UKVGhZawqP6gkfgmdJG0Sr57rb+PX3IvLBAVPaMSPt45c+w/HvO3gR1BUnCgvbxI2pLwTVc9rDKTlSEtRDfRewJVrV71lEuMwFMjVs4lMzwOgSHyiNx1yABPB1EQ0csY5KcGg8+EKM7OcdkJmRJH5k09uwqIeCCWrDWA5c7m/3dRPxTVhUBnGqorA=
+  - secure: NGQr4xJvle0Dzn4dD3RPw26Xl+EHOTti28lnakPuqRCmToXqe5NkltT8dRanlAtcDd3QgoZt44jZQsk6qn2EcFtTHfXTyjW/707wUKyG+tWPwDhc3tas8ri2cYgAHzazmtSZOuIhbar9dqfagvtK4sRSldynixyPeXS6s+jLQ4Fnk+GXAYa6hctCLSICJbbCVuhta5JNGVKs5iGmjxs9pg2iw3bpOkVIKrLMcutaSEmoBQPzUV+mhllouKU2S5GRZINGRBIvYUZSSJbi1/MNoCEBPOeIeI4ST8u0dRFkkvwWA2/Id3k+lxVaOi+2A2GyeG7NnO8+diDA0LyxFwI5gD7rF6mTqApba3GJpRndAtfd4gqnJtd65P06i9qjZiUg2jRvb4BjjVOz66hyecoiCd/NpeF+0HazNrHrn+TfC3D/Ajo+EfeAwFZgFz4qFdhJk6TViW+da9AR6HP+ZiGkzCkcqYZ1dFQu7owNHX43EVAfi82figPtR3Ze28kc7lZmEUUZJsWKO6g1hnqAgnznfjvtYXkKshP45g6O1XZ7li7zC8kiGHvBZDqmEWBpRhLuBK5Am2+0phFZP03S+UfTzPPvIFNZN8D0v7z/egYFCNvZ3jm+TfRAgxCWJdNulsbc0k5B9IQqTmqhVIGTya5M7raEtkDxdF9lNyOktIk3KLY=
