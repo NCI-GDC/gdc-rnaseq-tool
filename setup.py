@@ -232,6 +232,7 @@ setup(
     version=__pypi_version__,
     python_requires=">=3.6",
     packages=find_packages(),
+    package_data={"": ["*.gz"],},
     install_requires=INSTALL_REQUIRES,
     tests_require=TESTS_REQUIRE,
     cmdclass={
