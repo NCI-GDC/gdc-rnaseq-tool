@@ -11,14 +11,14 @@ def load_counts_table(counts):
 
     returns pandas DataFrame with the following columns:
         gene_id
+        unstranded
         stranded_first
         stranded_second
-        unstranded
     '''
     cdf = pd.read_table(
         counts,
         header=None,
-        names=['gene_id', 'stranded_first', 'stranded_second', 'unstranded'],
+        names=['gene_id', 'unstranded', 'stranded_first', 'stranded_second'],
     )
     return cdf
 
