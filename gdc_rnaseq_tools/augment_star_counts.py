@@ -262,9 +262,17 @@ def augment(
 
     Adds gene names and gene bio-types from data extracted from a GENCODE gtf
     Adds TPM, FPKM, FPKM-UQ normalized counts
-    Adds pragma indicating gene annotation version used
 
-    Writes an output file as TSV with a header line and pragma line
+    Writes an output file as TSV with a header line and pragma line indicating
+        the genome annotation version
+
+    Args:
+        counts_file: file name for STAR counts file
+        gene_info_file: file name for gene info containing 
+            [ gene_id, total_exon_length, gene_name, gene_type, chromosome ]
+        outfile: output file name
+        pragma_line: free-text string to be added to top of results file
+        logger: logging.Logger object used to communicate messages
     '''
 
     # load data
@@ -316,7 +324,10 @@ def augment(
 
 def main(args: Union[FakeArgs, Namespace]) -> None:
     """
-    Main entrypoint for augment_counts_table.
+    Main entrypoint for augment_counts_table. Maps CLI args to function args
+
+    Args:
+        args: generally an argparse.Namespace object, but FakeArgs for testing
     """
     logger = get_logger("augment_counts_table")
     logger.info("Augmenting STAR gene counts file {}.".format(args.input))
