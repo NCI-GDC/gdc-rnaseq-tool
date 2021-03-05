@@ -1,106 +1,161 @@
+import logging
+from argparse import Namespace
+from enum import Enum
+from typing import List, Optional, Text, Union
+
 import numpy as np
 import pandas as pd
 
 from gdc_rnaseq_tools.utils import DataError, DataFormatError, get_logger
+from tests import FakeArgs
 
 
-def load_counts_table(counts):
+class ColumnNames(Enum):
+    @classmethod
+    def cols(cls) -> List[Text]:
+        '''
+        Returns an ordered list of Enum members. Designed to return the
+        columns in a specific order for purposes of reading or printing.
+
+        Args:
+            None
+        
+        Returns:
+            list of column names as strings
+        '''
+        return [member.value for member in cls]
+
+
+class CountsColumns(ColumnNames):
+    GENE_ID = 'gene_id'
+    UNSTRANDED = 'unstranded'
+    STRANDED_FIRST = 'stranded_first'
+    STRANDED_SECOND = 'stranded_second'
+
+
+class GeneInfoColumns(ColumnNames):
+    GENE_ID = 'gene_id'
+    TOTAL_EXON_LENGTH = 'total_exon_length'
+    GENE_NAME = 'gene_name'
+    GENE_TYPE = 'gene_type'
+    CHROMOSOME = 'chromosome'
+
+
+class MergedColumns(ColumnNames):
+    GENE_ID = 'gene_id'
+    TOTAL_EXON_LENGTH = 'total_exon_length'
+    GENE_NAME = 'gene_name'
+    GENE_TYPE = 'gene_type'
+    CHROMOSOME = 'chromosome'
+    UNSTRANDED = 'unstranded'
+    STRANDED_FIRST = 'stranded_first'
+    STRANDED_SECOND = 'stranded_second'
+
+
+class FinalColumns(ColumnNames):
+    GENE_ID = 'gene_id'
+    GENE_NAME = 'gene_name'
+    GENE_TYPE = 'gene_type'
+    UNSTRANDED = 'unstranded'
+    STRANDED_FIRST = 'stranded_first'
+    STRANDED_SECOND = 'stranded_second'
+    TPM_UNSTRANDED = 'tpm_unstranded'
+    FPKM_UNSTRANDED = 'fpkm_unstranded'
+    FPKM_UQ_UNSTRANDED = 'fpkm_uq_unstranded'
+
+
+def load_table(
+    table_filename: Text, colnames: Optional[List[Text]] = None
+) -> pd.DataFrame:
     '''
-    Loads per-gene counts data table as created by STAR
+    Loads tabular data into a DataFrame. If 
 
-
-    returns pandas DataFrame with the following columns:
-        gene_id
-        unstranded
-        stranded_first
-        stranded_second
+    Args:
+        table_filename: file name of the tabular data
+        colnames: a list of column names to be used when the table has no 
+            column headers.
+    
+    Returns:
+        pandas DataFrame
     '''
-    cdf = pd.read_table(
-        counts,
-        header=None,
-        names=['gene_id', 'unstranded', 'stranded_first', 'stranded_second'],
-    )
-    return cdf
+
+    return pd.read_table(table_filename, names=colnames)
 
 
-def load_gene_info(gene_info):
+def validate_table(df: pd.DataFrame, expected_columns: List[Text]) -> None:
     '''
-    Loads table with additional information used to either annotate or 
-    calculate values needed to augment counts table.
+    Verifies that the table has exactly the expected columns
 
-    file should be TSV and should have the following columns:
-        gene_id
-        total_exon_length
-        gene_name
-        gene_type
-        Chromosome
-
-    returns pandas DataFrame with all columns
+    Args:
+        df: the data frame to check
+        expected_columns: the list of columns
+    
+    Returns:
+        None
+    
+    Throws
     '''
-    # load data
-    gdf = pd.read_table(gene_info)
-
-    # check that data has exactly the columns expected
-    expected_cols = [
-        'gene_id',
-        'total_exon_length',
-        'gene_name',
-        'gene_type',
-        'Chromosome',
-    ]
-    if set(expected_cols) - set(gdf.columns) != set():
+    if set(expected_columns) - set(df.columns) != set():
         raise DataFormatError('Expected columns not found')
-
-    # would be good to check that file is the correct length, but that's
-    # tied to the annotation and I'm not sure how to do that
-    return gdf
+    return True
 
 
-def prep_data(counts, gene_info):
+def merge_tables(df1: pd.DataFrame, df2: pd.DataFrame, on: Text) -> pd.DataFrame:
     '''
-    Load data files and merge on gene_id via "inner" join operation.
+    Performs an inner-join on data frames
 
+    Args:
+        df1: left data frame
+        df2: right data frame
+        on: common column name used to join data frames
+    
+    Returns:
+        A pandas.DataFrame created by joining on the key
+    '''
+
+    return pd.merge(df1, df2, on=on, how='inner')
+
+
+def get_extras(df: pd.DataFrame) -> pd.DataFrame:
+    '''
     STAR counts have 4 extra lines at the top reporting unmapped,
-    multimapping, noFeature, and ambiguous reads. These are not included
-    in the merged DataFrame, but are returned in the extras DataFrame to
-    be merged back into the final output.
+    multimapping, noFeature, and ambiguous reads. These are excluded
+    by the join operation for calculations but must be added back in
+    to the final data file. This function extracts those rows.
 
-    Returns a tuple of:
-        merged DataFrame
-        extras DataFrame
+    Args:
+        df: the counts data frame
+    
+    Returns:
+        pandas.DataFrame containing misaligned reads stats
     '''
-    cdf = load_counts_table(counts)
-    gdf = load_gene_info(gene_info)
-    df = pd.merge(gdf, cdf, on='gene_id', how='inner')
 
-    if len(df) != len(gdf):
-        raise DataError(
-            'Data length or key mismatch between gene counts and gene '
-            + 'annotation tables. Possible file truncation.'
-        )
-
-    # save table of mis-aligned read stats also reported by star
-    mdf = cdf.iloc[0:4].copy()
-
-    return df, mdf
+    return df.iloc[0:4].copy()
 
 
-def calc_tpm(df, excol='unstranded', lencol='total_exon_length'):
+def calc_tpm(expression: pd.Series, feature_effective_length: pd.Series) -> pd.Series:
     '''
     Transcripts Per Million
 
-    Calculate the TPM values for all genes in DataFrame df
+    Calculate the TPM values for all genes
 
-    TPM = RPK x 1e6 / M
+        TPM = RPK x 1e6 / M
 
-        RPK = C X 1e3 / L
-        C : count of fragments aligned to this gene
-        L : sum of exon lengths in gene where overlapping exons are merged
-            otherwise known as union exon length
-        M : sum over all genes of RPK values
+            RPK = C X 1e3 / L
+            C : count of fragments aligned to this gene
+            L : sum of exon lengths in gene where overlapping exons are merged
+                otherwise known as union exon length
+            M : sum over all genes of RPK values
+    
+    Args:
+        expression: raw counts of aligned reads
+        feature_effective_length: lengths of unified exons of each gene
+
+    Returns:
+        pandas.Series containing the calculated TPM values
     '''
     # RPK - reads per thousand bp of transcript length
-    rpk = df[excol] * 1e3 / df[lencol]
+    rpk = expression * 1e3 / feature_effective_length
     # sum of RPK signal
     M = rpk.sum()
     # TPM - transcripts per million
@@ -108,86 +163,100 @@ def calc_tpm(df, excol='unstranded', lencol='total_exon_length'):
     return tpm
 
 
-def calc_fpkm(df, excol='unstranded', lencol='total_exon_length', typecol='gene_type'):
+def calc_fpkm(
+    expression: pd.Series, feature_effective_length: pd.Series, gene_type: pd.Series
+) -> pd.Series:
     '''
     Fragments Per Kilobases (of transcript) and Millions (of fragments)
 
-    Calculate the FPKM values for all genes in DataFrame df
+    Calculate the FPKM values for all genes
 
-    FPKM = (C × 1e9)/(NL)
+        FPKM = (C × 1e9)/(NL)
 
-        C : count of fragments aligned to this gene
-        N : total fragment count to protein-coding genes
-        L : sum of exon lengths in gene where overlapping exons are merged
+            C : count of fragments aligned to this gene
+            N : total fragment count to protein-coding genes
+            L : sum of exon lengths in gene where overlapping exons are merged
+    
+    Args:
+        expression: raw counts of aligned reads
+        feature_effective_length: lengths of unified exons of each gene 
+        gene_type: gene biotypes used for calculating sum of expression of 
+            protein coding genes
     '''
     # select protein coding genes
-    sel = df[typecol] == 'protein_coding'
+    sel = gene_type == 'protein_coding'
     # get sum of counts in protein coding genes
-    N = df.loc[sel][excol].sum()
+    N = expression.loc[sel].sum()
     # calculate fpkm
-    fpkm = df[excol] * 1e9 / (N * df[lencol])
+    fpkm = expression * 1e9 / (N * feature_effective_length)
 
     return fpkm
 
 
 def calc_fpkm_uq(
-    df,
-    excol='unstranded',
-    lencol='total_exon_length',
-    typecol='gene_type',
-    chrcol='Chromosome',
-):
+    expression: pd.Series,
+    feature_effective_length: pd.Series,
+    gene_type: pd.Series,
+    chromosome: pd.Series,
+) -> pd.Series:
     '''
     Upper Quartile normalized FPKM
 
-    FPKM-UQ = (C × 1e9)/(UGL)
+        FPKM-UQ = (C × 1e9)/(UGL)
 
-        C : count of fragments aligned to this gene
-        U : upper quartile of fragment counts to autosomal protein-coding genes with count > 0
-        G : number of protein-coding genes on autosomes
-        L : sum of exon lengths in gene where overlapping exons are merged
+            C : count of fragments aligned to this gene
+            U : upper quartile of fragment counts to autosomal protein-coding
+                genes with count > 0
+            G : number of protein-coding genes on autosomes
+            L : sum of exon lengths in gene where overlapping exons are merged
+    
+    Args:
+        expression: raw counts of aligned reads
+        feature_effective_length: lengths of unified exons of each gene 
+        gene_type: gene biotypes used for calculating sum of expression of 
+            protein coding genes
+        chromosome: chromosome name on which gene is found
+        
     '''
     # selections for U and G
-    sel_prot = df[typecol] == 'protein_coding'
-    sel_autosomes = ~df[chrcol].isin(['chrX', 'chrY', 'chrM'])
-    sel_nonzero = df[excol] > 0
+    sel_prot = gene_type == 'protein_coding'
+    sel_autosomes = ~chromosome.isin(['chrX', 'chrY', 'chrM'])
+    sel_nonzero = expression > 0
+    # combine selections
     sel_U = sel_prot & sel_autosomes & sel_nonzero
     sel_G = sel_prot & sel_autosomes
 
     # Calculate U and G
-    U = np.quantile(df[sel_U][excol], 0.75)
-    G = len(df[sel_G])
+    U = np.quantile(expression.loc[sel_U], 0.75)
+    G = len(expression[sel_G])
 
     # Calculate FPKM-UQ
-    fpkm_uq = df[excol] * 1e9 / (U * G * df[lencol])
+    fpkm_uq = expression * 1e9 / (U * G * feature_effective_length)
     return fpkm_uq
 
 
-def save_result(df, outfile, pragma_line=''):
+def save_result(df: pd.DataFrame, outfile: Text, pragma_line: Text = '') -> None:
     '''
-    Write output table as TSV
-    '''
+    Write output table as TSV with 4 places of floating point precision
 
-    out_cols = [
-        'gene_id',
-        'gene_name',
-        'gene_type',
-        'stranded_first',
-        'stranded_second',
-        'unstranded',
-        'tpm_unstranded',
-        'fpkm_unstranded',
-        'fpkm_uq_unstranded',
-    ]
+    Args:
+        df: final results table
+        outfile: output file name
+        pragma_line: informational line to be added to top of output file
+    '''
 
     with open(outfile, 'w') as out:
-        print(pragma_line, file=out)
-        df[out_cols].to_csv(
-            out, sep='\t', header=True, index=False, float_format='%.4f'
-        )
+        out.write(pragma_line + '\n')
+        df.to_csv(out, sep='\t', header=True, index=False, float_format='%.4f')
 
 
-def augment(args, logger):
+def augment(
+    counts_file: Text,
+    gene_info_file: Text,
+    outfile: Text,
+    pragma_line: Text,
+    logger: logging.Logger,
+) -> None:
     '''
     Augment STAR read counts with normalized counts and gene info
 
@@ -199,30 +268,63 @@ def augment(args, logger):
     '''
 
     # load data
-    logger.info("Reading counts file {}".format(args.input))
-    logger.info("Reading gene_info file {}".format(args.gene_info))
-    # with open(args.input) as counts, open(args.gene_info) as gene_info:
-    df, edf = prep_data(args.input, args.gene_info)
+    logger.info("Reading counts file {}".format(counts_file))
+    counts = load_table(counts_file, CountsColumns.cols())
+    validate_table(counts, CountsColumns.cols())
+
+    logger.info("Reading gene info file {}".format(gene_info_file))
+    gene_info = load_table(gene_info_file)
+    validate_table(gene_info, GeneInfoColumns.cols())
+
+    # merge counts with gene info
+    logger.info("Merging counts and gene info tables")
+    merged = merge_tables(gene_info, counts, on=GeneInfoColumns.GENE_ID.value)
+    validate_table(merged, MergedColumns.cols())
 
     # calculate new normalized counts
     logger.info("Calculating normalized counts")
-    df['fpkm_unstranded'] = calc_fpkm(df)
-    df['fpkm_uq_unstranded'] = calc_fpkm_uq(df)
-    df['tpm_unstranded'] = calc_tpm(df)
+    # FPKM
+    merged[FinalColumns.FPKM_UNSTRANDED.value] = calc_fpkm(
+        expression=merged[MergedColumns.UNSTRANDED.value],
+        feature_effective_length=merged[MergedColumns.TOTAL_EXON_LENGTH.value],
+        gene_type=merged[MergedColumns.GENE_TYPE.value],
+    )
+
+    # FPKM-UQ
+    merged[FinalColumns.FPKM_UQ_UNSTRANDED.value] = calc_fpkm_uq(
+        expression=merged[MergedColumns.UNSTRANDED.value],
+        feature_effective_length=merged[MergedColumns.TOTAL_EXON_LENGTH.value],
+        gene_type=merged[MergedColumns.GENE_TYPE.value],
+        chromosome=merged[MergedColumns.CHROMOSOME.value],
+    )
+
+    # TPM
+    merged[FinalColumns.TPM_UNSTRANDED.value] = calc_tpm(
+        expression=merged[MergedColumns.UNSTRANDED.value],
+        feature_effective_length=merged[MergedColumns.TOTAL_EXON_LENGTH.value],
+    )
 
     # add back extra alignment stats
-    df = pd.concat([edf, df], axis=0)
+    misalign_stats = get_extras(counts)
+    final = pd.concat([misalign_stats, merged], axis=0)
+    final = final[FinalColumns.cols()].copy()
 
     # write output table
-    logger.info("Saving results to {}".format(args.output))
-    save_result(df, outfile=args.output, pragma_line=' '.join(args.pragma_line))
+    logger.info("Saving results to {}".format(outfile))
+    save_result(df=final, outfile=outfile, pragma_line=pragma_line)
 
 
-def main(args):
+def main(args: Union[FakeArgs, Namespace]) -> None:
     """
     Main entrypoint for augment_counts_table.
     """
     logger = get_logger("augment_counts_table")
     logger.info("Augmenting STAR gene counts file {}.".format(args.input))
 
-    augment(args, logger)
+    augment(
+        counts_file=args.input,
+        gene_info_file=args.gene_info,
+        outfile=args.output,
+        pragma_line=' '.join(args.pragma_line),
+        logger=logger,
+    )
