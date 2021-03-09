@@ -92,9 +92,8 @@ def load_args():
         "-p",
         "--pragma-line",
         required=True,
-        action='extend',
-        nargs='+',
-        help="commented ",
+        action='store',
+        help="added at top of output file indicating gencode version",
     )
 
     return parser.parse_args()

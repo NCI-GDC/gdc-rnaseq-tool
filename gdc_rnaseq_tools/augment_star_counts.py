@@ -335,6 +335,6 @@ def main(args: Union[FakeArgs, Namespace]) -> None:
         counts_file=args.input,
         gene_info_file=args.gene_info,
         outfile=args.output,
-        pragma_line=' '.join(args.pragma_line),
+        pragma_line=args.pragma_line,
         logger=logger,
     )
