@@ -14,7 +14,7 @@ REPO = "gdc-rnaseq-tool"
 GITHUB_REPO = "https://github.com/NCI-GDC/{}".format(REPO)
 PYPI_PACKAGE = "{}".format(REPO)
 
-INSTALL_REQUIRES = []
+INSTALL_REQUIRES = ['pandas', 'numpy']
 
 DEV_REQUIRES = [
     'detect-secrets==0.13.1',

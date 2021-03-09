@@ -1,3 +1,5 @@
+pandas
+numpy
 detect-secrets==0.13.1
 flake8
 isort
