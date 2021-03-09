@@ -89,11 +89,11 @@ def load_args():
         help="Output file name.",
     )
     augct.add_argument(
-        "-p",
-        "--pragma-line",
+        "-v",
+        "--gencode-version",
         required=True,
         action='store',
-        help="added at top of output file indicating gencode version",
+        help="adds a pragma line storing the gencode version to output",
     )
 
     return parser.parse_args()
