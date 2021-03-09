@@ -97,7 +97,6 @@ def validate_table(df: pd.DataFrame, expected_columns: List[Text]) -> None:
     '''
     if set(expected_columns) - set(df.columns) != set():
         raise DataFormatError('Expected columns not found')
-    return True
 
 
 def merge_tables(df1: pd.DataFrame, df2: pd.DataFrame, on: Text) -> pd.DataFrame:
