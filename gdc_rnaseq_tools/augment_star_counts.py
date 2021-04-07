@@ -79,7 +79,7 @@ def load_table(
         pandas DataFrame
     '''
 
-    return pd.read_table(table_filename, names=colnames)
+    return pd.read_table(table_filename, names=colnames, comment='#')
 
 
 def validate_table(df: pd.DataFrame, expected_columns: List[Text]) -> None:
