@@ -79,7 +79,7 @@ def load_table(
         pandas DataFrame
     '''
 
-    return pd.read_table(table_filename, names=colnames)
+    return pd.read_table(table_filename, names=colnames, comment='#')
 
 
 def validate_table(df: pd.DataFrame, expected_columns: List[Text]) -> None:
@@ -234,7 +234,9 @@ def calc_fpkm_uq(
     return fpkm_uq
 
 
-def save_result(df: pd.DataFrame, outfile: Text, pragma_line: Text = '') -> None:
+def save_result(
+    df: pd.DataFrame, outfile: Text, gencode_version: Optional[int] = None
+) -> None:
     '''
     Write output table as TSV with 4 places of floating point precision
 
@@ -245,7 +247,8 @@ def save_result(df: pd.DataFrame, outfile: Text, pragma_line: Text = '') -> None
     '''
 
     with open(outfile, 'w') as out:
-        out.write(pragma_line + '\n')
+        if gencode_version is not None:
+            out.write('# gene-model: GENCODE v{}\n'.format(gencode_version))
         df.to_csv(out, sep='\t', header=True, index=False, float_format='%.4f')
 
 
@@ -253,7 +256,7 @@ def augment(
     counts_file: Text,
     gene_info_file: Text,
     outfile: Text,
-    pragma_line: Text,
+    gencode_version: int,
     logger: logging.Logger,
 ) -> None:
     '''
@@ -318,7 +321,7 @@ def augment(
 
     # write output table
     logger.info("Saving results to {}".format(outfile))
-    save_result(df=final, outfile=outfile, pragma_line=pragma_line)
+    save_result(df=final, outfile=outfile, gencode_version=gencode_version)
 
 
 def main(args: Union[FakeArgs, Namespace]) -> None:
@@ -335,6 +338,6 @@ def main(args: Union[FakeArgs, Namespace]) -> None:
         counts_file=args.input,
         gene_info_file=args.gene_info,
         outfile=args.output,
-        pragma_line=' '.join(args.pragma_line),
+        gencode_version=args.gencode_version,
         logger=logger,
     )

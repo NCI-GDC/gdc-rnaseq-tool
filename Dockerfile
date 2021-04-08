@@ -1,4 +1,4 @@
-FROM quay.io/ncigdc/bio-py36:latest
+FROM quay.io/ncigdc/bio-python:3.6
 
 ENV BINARY=gdc_rnaseq_tools
 

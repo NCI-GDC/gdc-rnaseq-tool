@@ -177,13 +177,13 @@ class TestAugmentStarCounts(unittest.TestCase):
             {'id': [1, 2, 3, 4], 'A': ['one', 'two', 'three', 'four'],}
         )
 
-        save_result(df=testdf, outfile=outfile, pragma_line='# Pragma McPragma-face')
+        save_result(df=testdf, outfile=outfile, gencode_version=36)
 
         with open(outfile, 'rt') as result:
             res_lines = result.read()
 
         expected = (
-            '# Pragma McPragma-face\n'
+            '# gene-model: GENCODE v36\n'
             'id\tA\n'
             '1\tone\n'
             '2\ttwo\n'
@@ -203,7 +203,7 @@ class TestAugmentStarCounts(unittest.TestCase):
             counts_file=self.ts1_counts_file,
             gene_info_file=self.ts1_gene_info_file,
             outfile=outfile,
-            pragma_line='# gene-model: GENCODE v36',
+            gencode_version=36,
             logger=self.logger,
         )
 
@@ -218,7 +218,7 @@ class TestAugmentStarCounts(unittest.TestCase):
         args.input = self.ts1_counts_file
         args.gene_info = self.ts1_gene_info_file
         args.output = outfile
-        args.pragma_line = "# gene-model: GENCODE v36"
+        args.gencode_version = 36
         self.to_remove.append(args.output)
 
         main(args)
