@@ -1,20 +1,25 @@
-FROM quay.io/ncigdc/bio-python:3.6
+FROM quay.io/ncigdc/bio-python:3.6 as builder
 
-ENV BINARY=gdc_rnaseq_tools
-
-RUN apt-get update \
-  && apt-get clean autoclean \
-  && apt-get autoremove -y \
-  && rm -rf /var/lib/apt/lists/*
-
-COPY ./dist/ /opt
+COPY ./ /opt
 
 WORKDIR /opt
 
-RUN make init-pip \
-  && ln -s /opt/bin/${BINARY} /bin/${BINARY} \
-  && chmod +x /bin/${BINARY}
+RUN python -m pip install tox && tox
 
-ENTRYPOINT ["/bin/gdc_rnaseq_tools"]
+# tox step builds sdist
+
+FROM quay.io/ncigdc/bio-alpine:py36
+
+COPY --from=builder /opt/dist/*.tar.gz /opt
+COPY ./requirements.txt /opt/requirements.txt
+
+WORKDIR /opt
+
+# Install package from sdist
+RUN pip install -r requirements.txt \
+	&& pip install *.tar.gz \
+	&& rm -rf *.tar.gz requirements.txt
+
+ENTRYPOINT ["gdc_rnaseq_tools"]
 
 CMD ["--help"]
