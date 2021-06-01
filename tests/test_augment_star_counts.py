@@ -147,7 +147,7 @@ class TestAugmentStarCounts(unittest.TestCase):
         """
         Tests the `merge_tables` function
         """
-        df1 = pd.DataFrame({'id': [1, 2, 3, 4], 'A': ['one', 'two', 'three', 'four'],})
+        df1 = pd.DataFrame({'id': [1, 2, 3, 4], 'A': ['one', 'two', 'three', 'four']})
         df2 = pd.DataFrame({'id': [2, 3, 4, 5], 'B': ['owt', 'eerht', 'ruof', 'evif']})
         res = pd.DataFrame(
             {
@@ -174,7 +174,7 @@ class TestAugmentStarCounts(unittest.TestCase):
         self.to_remove.append(outfile)
 
         testdf = pd.DataFrame(
-            {'id': [1, 2, 3, 4], 'A': ['one', 'two', 'three', 'four'],}
+            {'id': [1, 2, 3, 4], 'A': ['one', 'two', 'three', 'four']}
         )
 
         save_result(df=testdf, outfile=outfile, gencode_version=36)
