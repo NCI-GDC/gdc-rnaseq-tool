@@ -8,6 +8,7 @@ __pycache__/
 
 # Distribution / packaging
 .Python
+env/
 build/
 develop-eggs/
 dist/
@@ -23,7 +24,6 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
-MANIFEST
 _version.py
 
 # PyInstaller
@@ -46,7 +46,6 @@ nosetests.xml
 coverage.xml
 *.cover
 .hypothesis/
-.pytest_cache/
 
 # Translations
 *.mo
@@ -55,7 +54,6 @@ coverage.xml
 # Django stuff:
 *.log
 local_settings.py
-db.sqlite3
 
 # Flask stuff:
 instance/
@@ -82,16 +80,17 @@ celerybeat-schedule
 # SageMath parsed files
 *.sage.py
 
-# Environments
+# dotenv
 .env
+
+# virtualenv
 .venv
-.envrc
-.direnv/
-env/
 venv/
 ENV/
-env.bak/
-venv.bak/
+
+# direnv
+.envrc
+.direnv/
 
 # Spyder project settings
 .spyderproject
@@ -105,3 +104,7 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+
+# VSCode
+.vscode/
+test-reports/
