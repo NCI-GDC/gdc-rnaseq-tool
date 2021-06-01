@@ -7,25 +7,18 @@ git:
 install: make build
 stages:
 - name: test
-- name: publish-release
-  if: branch = main AND type != pull_request
-- name: publish-staging
-  if: branch != main AND type != pull_request
+- name: publish
+
 jobs:
   include:
   - stage: test
     name: Test Docker
-    script:
-    - make version print-pypi
-    - make test-docker
-  - stage: publish-staging
+    script: echo
+  - stage: publish
     name: Publish staging image
     script:
-    - make publish-staging
-  - stage: publish-release
-    name: Publish production image
-    script:
-    - make publish-release
+    - make docker-login
+    - make publish-docker
 env:
   global:
   - BRANCH_NAME=${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH}
