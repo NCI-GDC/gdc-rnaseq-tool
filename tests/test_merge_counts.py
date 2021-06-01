@@ -1,10 +1,10 @@
+import gzip
 import os
 import unittest
-import gzip
 from collections import OrderedDict
 
+from gdc_rnaseq_tools.merge_counts import load_star_file, main, merge_star_counts
 from tests import FakeArgs
-from gdc_rnaseq_tools.merge_counts import merge_star_counts, load_star_file, main
 
 
 class TestMergeStarGeneCounts(unittest.TestCase):

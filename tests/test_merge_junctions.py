@@ -1,14 +1,14 @@
+import gzip
 import os
 import unittest
-import gzip
 from collections import OrderedDict
 
-from tests import FakeArgs
 from gdc_rnaseq_tools.merge_junctions import (
     StarJunctionRecord,
     load_junction_file,
     main,
 )
+from tests import FakeArgs
 
 
 class TestMergeStarJunctions(unittest.TestCase):
