@@ -4,7 +4,7 @@ python:
 services: docker
 git:
   depth: false
-install: make build
+install: make docker-login build
 stages:
 - name: test
 - name: publish
