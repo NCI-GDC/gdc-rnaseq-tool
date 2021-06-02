@@ -1,14 +1,14 @@
+import gzip
 import os
 import unittest
-import gzip
 from collections import OrderedDict
 
-from tests import FakeArgs
 from gdc_rnaseq_tools.merge_junctions import (
     StarJunctionRecord,
     load_junction_file,
     main,
 )
+from tests import FakeArgs
 
 
 class TestMergeStarJunctions(unittest.TestCase):
@@ -31,7 +31,7 @@ class TestMergeStarJunctions(unittest.TestCase):
 
     def test_star_junction_record(self):
         """
-        Tests the `StarJunctionRecord` class. 
+        Tests the `StarJunctionRecord` class.
         """
         line = "\t".join(["chr1", "100", "200", "1", "1", "1", "1", "0", "23"])
         rec = StarJunctionRecord.from_line(line)
@@ -48,7 +48,7 @@ class TestMergeStarJunctions(unittest.TestCase):
 
     def test_star_junction_record_funcs(self):
         """
-        Tests the `StarJunctionRecord` class functions. 
+        Tests the `StarJunctionRecord` class functions.
         """
         line1 = "\t".join(["chr1", "100", "200", "1", "1", "1", "1", "0", "23"])
         line2 = "\t".join(["chr1", "100", "200", "1", "1", "1", "3", "2", "20"])

@@ -7,6 +7,7 @@ import argparse
 import gdc_rnaseq_tools.augment_star_counts as augment_star_counts
 import gdc_rnaseq_tools.merge_counts as merge_star_gene_counts
 import gdc_rnaseq_tools.merge_junctions as merge_star_junctions
+from gdc_rnaseq_tools import __version__
 from gdc_rnaseq_tools.utils import get_logger
 
 
@@ -18,6 +19,7 @@ def load_args():
     parser = argparse.ArgumentParser(
         description="Utility functions for the GDC RNA-Seq workflow"
     )
+    parser.add_argument("--version", action="version", version=__version__)
     sp = parser.add_subparsers(description="Select a tool", dest="choice")
     sp.required = True
 
