@@ -2,8 +2,8 @@
 
 @author: Kyle Hernandez <kmhernan@uchicago.edu>
 """
-import logging
 import gzip
+import logging
 
 
 def get_logger(name):
@@ -37,3 +37,30 @@ def get_open_function(fil):
         return gzip.open
     else:
         return open
+
+
+class Error(Exception):
+    """
+    Base Exception class
+    """
+
+    pass
+
+
+class DataFormatError(Error):
+    """
+    Raised when a data file does not follow the expected format
+    """
+
+    def __init__(self, message):
+        self.message = message
+
+
+class DataError(Error):
+    """
+    Raised when the contents of a file are problematic
+    i.e. truncated, have the wrong contents
+    """
+
+    def __init__(self, message):
+        self.message = message

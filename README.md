@@ -5,7 +5,7 @@ Utility scripts for GDC RNA-seq workflows. The docker file also installs
 
 ## Requirements
 
-* `python>=3.5`
+* `python>=3.6`
 
 ## Merge/Format STAR gene counts
 
