@@ -93,7 +93,8 @@ def load_args():
         "--gencode-version",
         required=True,
         action='store',
-        help="adds a pragma line storing the gencode version to output",
+        help="Adds a pragma line storing the gencode version to output. "
+        + "Expects a value like: v36 ",
     )
 
     return parser.parse_args()

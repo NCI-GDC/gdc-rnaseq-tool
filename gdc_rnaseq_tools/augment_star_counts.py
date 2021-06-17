@@ -248,7 +248,7 @@ def save_result(
 
     with open(outfile, 'w') as out:
         if gencode_version is not None:
-            out.write('# gene-model: GENCODE v{}\n'.format(gencode_version))
+            out.write('# gene-model: GENCODE {}\n'.format(gencode_version))
         df.to_csv(out, sep='\t', header=True, index=False, float_format='%.4f')
 
 
