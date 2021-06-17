@@ -19,7 +19,7 @@ class ColumnNames(Enum):
 
         Args:
             None
-        
+
         Returns:
             list of column names as strings
         '''
@@ -68,13 +68,13 @@ def load_table(
     table_filename: Text, colnames: Optional[List[Text]] = None
 ) -> pd.DataFrame:
     '''
-    Loads tabular data into a DataFrame. If 
+    Loads tabular data into a DataFrame. If
 
     Args:
         table_filename: file name of the tabular data
-        colnames: a list of column names to be used when the table has no 
+        colnames: a list of column names to be used when the table has no
             column headers.
-    
+
     Returns:
         pandas DataFrame
     '''
@@ -89,10 +89,10 @@ def validate_table(df: pd.DataFrame, expected_columns: List[Text]) -> None:
     Args:
         df: the data frame to check
         expected_columns: the list of columns
-    
+
     Returns:
         None
-    
+
     Throws
     '''
     if set(expected_columns) - set(df.columns) != set():
@@ -107,7 +107,7 @@ def merge_tables(df1: pd.DataFrame, df2: pd.DataFrame, on: Text) -> pd.DataFrame
         df1: left data frame
         df2: right data frame
         on: common column name used to join data frames
-    
+
     Returns:
         A pandas.DataFrame created by joining on the key
     '''
@@ -124,7 +124,7 @@ def get_extras(df: pd.DataFrame) -> pd.DataFrame:
 
     Args:
         df: the counts data frame
-    
+
     Returns:
         pandas.DataFrame containing misaligned reads stats
     '''
@@ -145,7 +145,7 @@ def calc_tpm(expression: pd.Series, feature_effective_length: pd.Series) -> pd.S
             L : sum of exon lengths in gene where overlapping exons are merged
                 otherwise known as union exon length
             M : sum over all genes of RPK values
-    
+
     Args:
         expression: raw counts of aligned reads
         feature_effective_length: lengths of unified exons of each gene
@@ -175,11 +175,11 @@ def calc_fpkm(
             C : count of fragments aligned to this gene
             N : total fragment count to protein-coding genes
             L : sum of exon lengths in gene where overlapping exons are merged
-    
+
     Args:
         expression: raw counts of aligned reads
-        feature_effective_length: lengths of unified exons of each gene 
-        gene_type: gene biotypes used for calculating sum of expression of 
+        feature_effective_length: lengths of unified exons of each gene
+        gene_type: gene biotypes used for calculating sum of expression of
             protein coding genes
     '''
     # select protein coding genes
@@ -208,14 +208,14 @@ def calc_fpkm_uq(
                 genes with count > 0
             G : number of protein-coding genes on autosomes
             L : sum of exon lengths in gene where overlapping exons are merged
-    
+
     Args:
         expression: raw counts of aligned reads
-        feature_effective_length: lengths of unified exons of each gene 
-        gene_type: gene biotypes used for calculating sum of expression of 
+        feature_effective_length: lengths of unified exons of each gene
+        gene_type: gene biotypes used for calculating sum of expression of
             protein coding genes
         chromosome: chromosome name on which gene is found
-        
+
     '''
     # selections for U and G
     sel_prot = gene_type == 'protein_coding'
@@ -270,7 +270,7 @@ def augment(
 
     Args:
         counts_file: file name for STAR counts file
-        gene_info_file: file name for gene info containing 
+        gene_info_file: file name for gene info containing
             [ gene_id, total_exon_length, gene_name, gene_type, chromosome ]
         outfile: output file name
         pragma_line: free-text string to be added to top of results file

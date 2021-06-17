@@ -177,7 +177,7 @@ class TestAugmentStarCounts(unittest.TestCase):
             {'id': [1, 2, 3, 4], 'A': ['one', 'two', 'three', 'four'],}
         )
 
-        save_result(df=testdf, outfile=outfile, gencode_version=36)
+        save_result(df=testdf, outfile=outfile, gencode_version='v36')
 
         with open(outfile, 'rt') as result:
             res_lines = result.read()
@@ -203,7 +203,7 @@ class TestAugmentStarCounts(unittest.TestCase):
             counts_file=self.ts1_counts_file,
             gene_info_file=self.ts1_gene_info_file,
             outfile=outfile,
-            gencode_version=36,
+            gencode_version='v36',
             logger=self.logger,
         )
 
@@ -218,7 +218,7 @@ class TestAugmentStarCounts(unittest.TestCase):
         args.input = self.ts1_counts_file
         args.gene_info = self.ts1_gene_info_file
         args.output = outfile
-        args.gencode_version = 36
+        args.gencode_version = 'v36'
         self.to_remove.append(args.output)
 
         main(args)
