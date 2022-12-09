@@ -8,7 +8,7 @@ appdirs==1.4.4
     # via virtualenv
 attrs==21.2.0
     # via pytest
-certifi==2021.5.30
+certifi==2022.12.7
     # via requests
 cfgv==3.3.0
     # via pre-commit
@@ -30,18 +30,6 @@ identify==2.2.7
     # via pre-commit
 idna==2.10
     # via requests
-importlib-metadata==4.4.0
-    # via
-    #   flake8
-    #   pluggy
-    #   pre-commit
-    #   pytest
-    #   tox
-    #   virtualenv
-importlib-resources==5.1.4
-    # via
-    #   pre-commit
-    #   virtualenv
 iniconfig==1.1.1
     # via pytest
 isort==5.8.0
@@ -50,10 +38,10 @@ mccabe==0.6.1
     # via flake8
 mock==4.0.3
     # via -r dev-requirements.in
-mypy-extensions==0.4.3
-    # via mypy
 mypy==0.812
     # via -r dev-requirements.in
+mypy-extensions==0.4.3
+    # via mypy
 nodeenv==1.6.0
     # via pre-commit
 packaging==20.9
@@ -76,12 +64,12 @@ pyflakes==2.3.1
     # via flake8
 pyparsing==2.4.7
     # via packaging
-pytest-cov==2.12.1
-    # via -r dev-requirements.in
 pytest==6.2.4
     # via
     #   -r dev-requirements.in
     #   pytest-cov
+pytest-cov==2.12.1
+    # via -r dev-requirements.in
 pyyaml==5.4.1
     # via
     #   detect-secrets
@@ -104,16 +92,10 @@ tox==3.23.1
 typed-ast==1.4.3
     # via mypy
 typing-extensions==3.10.0.0
-    # via
-    #   importlib-metadata
-    #   mypy
+    # via mypy
 urllib3==1.26.5
     # via requests
 virtualenv==20.4.7
     # via
     #   pre-commit
     #   tox
-zipp==3.4.1
-    # via
-    #   importlib-metadata
-    #   importlib-resources
