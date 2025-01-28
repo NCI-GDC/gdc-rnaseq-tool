@@ -20,6 +20,4 @@ RUN pip install -r requirements.txt \
 	&& pip install *.tar.gz \
 	&& rm -rf *.tar.gz requirements.txt
 
-ENTRYPOINT ["gdc_rnaseq_tools"]
-
-CMD ["--help"]
+CMD ["gdc_rnaseq_tools --help"]
