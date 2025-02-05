@@ -9,7 +9,7 @@
         "project_name": "gdc-rnaseq-tool",
         "package_name": "gdc_rnaseq_tool",
         "project_short_description": "Utility scripts for GDC RNA-seq workflows. The docker file also installs Trimmomatic and fqvendorfail.",
-        "min_python_version": "3.6",
+        "min_python_version": "3.8",
         "github_repo": "https://github.com/NCI-GDC/gdc-rnaseq-tool",
         "commit": "baf2226bed9c364393971df5fb8ed3bdafa1c744",
         "_template": "git@github.com:NCI-GDC/bio-python-template.git"
