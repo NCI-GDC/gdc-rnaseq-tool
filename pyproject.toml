@@ -51,24 +51,24 @@ type = [
 homepage = "https://github.com/NCI-GDC/gdc-rnaseq-tool"
 
 [project.scripts]
-"gdc_rnaseq_tool" = "gdc_rnaseq_tool.__main__:main"
+"gdc_rnaseq_tools" = "gdc_rnaseq_tools.__main__:main"
 
 [tool.setuptools_scm]
-write_to = "gdc_rnaseq_tool/_version.py"
+write_to = "gdc_rnaseq_tools/_version.py"
 local_scheme = "dirty-tag"
 version_scheme = "python-simplified-semver"
 fallback_version = "0"
 
 [tool.coverage.run]
-source = ["gdc_rnaseq_tool"]
+source = ["gdc_rnaseq_tools"]
 branch = true
 parallel = true
 
 [tool.flit.module]
-name = "gdc_rnaseq_tool"
+name = "gdc_rnaseq_tools"
 
 [tool.flit.sdist]
-include = ["gdc_rnaseq_tool/_version.py"]
+include = ["gdc_rnaseq_tools/_version.py"]
 exclude = [
         ".*",
         "dev-requirements.*",
