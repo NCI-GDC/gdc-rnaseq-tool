@@ -2,6 +2,7 @@
 
 @author: Kyle Hernandez <kmhernan@uchicago.edu>
 """
+
 import gzip
 import logging
 

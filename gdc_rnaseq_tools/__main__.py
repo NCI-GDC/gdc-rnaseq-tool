@@ -2,6 +2,7 @@
 
 @author: Kyle Hernandez <kmhernan@uchicago.edu>
 """
+
 import argparse
 
 import gdc_rnaseq_tools.augment_star_counts as augment_star_counts
@@ -94,7 +95,7 @@ def load_args():
         "-v",
         "--gencode-version",
         required=True,
-        action='store',
+        action="store",
         help="adds a pragma line storing the gencode version to output",
     )
 
