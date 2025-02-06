@@ -78,7 +78,7 @@ class TestAugmentStarCounts(unittest.TestCase):
 
     logger = get_logger("augment_counts_table.testing")
 
-    def test_calc_fpkm(self):
+    def test_calc_fpkm(self) -> None:
         """
         Tests the `calc_fpkm` function
         """
@@ -90,7 +90,7 @@ class TestAugmentStarCounts(unittest.TestCase):
 
         self.assertTrue((fpkm == self.df1_fpkm).all())
 
-    def test_calc_fpkm_uq(self):
+    def test_calc_fpkm_uq(self) -> None:
         """
         Tests the `calc_fpkm_uq` function
         """
@@ -103,7 +103,7 @@ class TestAugmentStarCounts(unittest.TestCase):
 
         self.assertTrue((fpkm_uq == self.df1_fpkm_uq).all())
 
-    def test_calc_tpm(self):
+    def test_calc_tpm(self) -> None:
         """
         Tests the `calc_tpm` function
         """
@@ -116,20 +116,20 @@ class TestAugmentStarCounts(unittest.TestCase):
         # print(self.df1_tpm)
         self.assertTrue((tpm == self.df1_tpm).all())
 
-    def test_load_table(self):
+    def test_load_table(self) -> None:
         """
         Tests the `load_tables` function
         """
         df1 = load_table(self.simple_file)
         pd.testing.assert_frame_equal(df1, self.df1_raw)
 
-    def test_validate_table_good(self):
+    def test_validate_table_good(self) -> None:
         """
         Tests the `validate_tables` function
         """
         validate_table(self.df1_raw, self.df1_raw.columns.tolist())
 
-    def test_validate_table_bad(self):
+    def test_validate_table_bad(self) -> None:
         """
         Tests the `validate_tables` function with incorrect column names
         """
@@ -140,7 +140,7 @@ class TestAugmentStarCounts(unittest.TestCase):
             expected_columns=["not", "in", "the", "table"],
         )
 
-    def test_merge(self):
+    def test_merge(self) -> None:
         """
         Tests the `merge_tables` function
         """
@@ -155,7 +155,7 @@ class TestAugmentStarCounts(unittest.TestCase):
         )
         pd.testing.assert_frame_equal(merge_tables(df1, df2, on="id"), res)
 
-    def test_get_extras(self):
+    def test_get_extras(self) -> None:
         """
         Tests the `get_extras` function
         """
@@ -163,7 +163,7 @@ class TestAugmentStarCounts(unittest.TestCase):
         res = get_extras(self.df1_raw)
         pd.testing.assert_frame_equal(res, test_answer)
 
-    def test_save_result(self):
+    def test_save_result(self) -> None:
         """
         Test the `save_results` function
         """
@@ -184,7 +184,7 @@ class TestAugmentStarCounts(unittest.TestCase):
         )
         self.assertEqual(expected, res_lines)
 
-    def test_augment(self):
+    def test_augment(self) -> None:
         """
         Tests `augment` function
         """
@@ -199,7 +199,7 @@ class TestAugmentStarCounts(unittest.TestCase):
             logger=self.logger,
         )
 
-    def test_full_run(self):
+    def test_full_run(self) -> None:
         """
         Full end-to-end test
         """
@@ -219,10 +219,10 @@ class TestAugmentStarCounts(unittest.TestCase):
         expected = pd.read_table(self.ts1_final_file, comment="#")
         pd.testing.assert_frame_equal(result, expected)
 
-    def setUp(self):
+    def setUp(self) -> None:
         pass
 
-    def tearDown(self):
+    def tearDown(self) -> None:
         for fil in self.to_remove:
             if os.path.exists(fil):
                 os.remove(fil)

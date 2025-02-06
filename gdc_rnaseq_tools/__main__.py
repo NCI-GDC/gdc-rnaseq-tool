@@ -102,7 +102,7 @@ def load_args():
     return parser.parse_args()
 
 
-def main():
+def main() -> None:
     """Main entry point for CLI"""
     logger = get_logger("gdc-rnaseq-tools")
     args = load_args()
