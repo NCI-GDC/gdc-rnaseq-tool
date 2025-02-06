@@ -1,7 +1,6 @@
 import gzip
 import os
 import unittest
-from collections import OrderedDict
 
 from gdc_rnaseq_tools.merge_junctions import (
     StarJunctionRecord,

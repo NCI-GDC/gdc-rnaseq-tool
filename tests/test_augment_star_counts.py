@@ -1,7 +1,5 @@
-import gzip
 import os
 import unittest
-from collections import OrderedDict
 
 import pandas as pd
 
@@ -17,7 +15,7 @@ from gdc_rnaseq_tools.augment_star_counts import (
     save_result,
     validate_table,
 )
-from gdc_rnaseq_tools.utils import DataError, DataFormatError, get_logger
+from gdc_rnaseq_tools.utils import DataFormatError, get_logger
 from tests.fakearg import FakeArgs
 
 
