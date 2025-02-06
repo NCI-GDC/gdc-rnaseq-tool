@@ -8,7 +8,7 @@ from gdc_rnaseq_tools.merge_junctions import (
     load_junction_file,
     main,
 )
-from tests import FakeArgs
+from tests.fakearg import FakeArgs
 
 
 class TestMergeStarJunctions(unittest.TestCase):

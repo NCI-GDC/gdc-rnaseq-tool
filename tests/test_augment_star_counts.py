@@ -18,7 +18,7 @@ from gdc_rnaseq_tools.augment_star_counts import (
     validate_table,
 )
 from gdc_rnaseq_tools.utils import DataError, DataFormatError, get_logger
-from tests import FakeArgs
+from tests.fakearg import FakeArgs
 
 
 class TestAugmentStarCounts(unittest.TestCase):
