@@ -19,7 +19,9 @@ classifiers = [
 ]
 dynamic = ["version"]
 dependencies = [
-    "click"
+    "click",
+    "numpy",
+    "pandas"
 ]
 
 [project.optional-dependencies]
