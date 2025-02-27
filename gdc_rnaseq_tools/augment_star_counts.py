@@ -6,8 +6,7 @@ from typing import List, Optional, Text, Union
 import numpy as np
 import pandas as pd
 
-from gdc_rnaseq_tools.utils import DataFormatError, get_logger
-from tests.fakearg import FakeArgs
+from gdc_rnaseq_tools.utils import DataFormatError, FakeArgs, get_logger
 
 
 class ColumnNames(Enum):

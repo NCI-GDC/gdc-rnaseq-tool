@@ -5,6 +5,7 @@
 
 import gzip
 import logging
+from typing import Any
 
 
 def get_logger(name):
@@ -65,3 +66,10 @@ class DataError(Error):
 
     def __init__(self, message):
         self.message = message
+
+
+class FakeArgs:
+    """Mock args"""
+
+    def __setattr__(self, key: str, value: Any) -> None:
+        self.__dict__[key] = value
