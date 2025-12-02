@@ -1,46 +1,19 @@
 # gdc-rnaseq-tool
-Utility scripts for GDC RNA-seq workflows. The docker file also installs
-[Trimmomatic](http://www.usadellab.org/cms/index.php?page=trimmomatic) and
-[fqvendorfail](https://github.com/kmhernan/fqvendorfail.git).
 
-## Requirements
+Utility scripts for GDC RNA-seq workflows. The docker file also installs Trimmomatic and fqvendorfail.
 
-* `python>=3.6`
+## Installation
 
-## Merge/Format STAR gene counts
-
-Takes one or more STAR gene counts files from the same sample, adds a header row,
-and merges (only if more than 1 is provided) counts by summing across files.
-
-```
-usage: gdc-rnaseq-tools merge_star_gene_counts [-h] -i INPUT -o OUTPUT
-
-Formats and merges STAR gene counts files.
-
-optional arguments:
-  -h, --help            show this help message and exit
-  -i INPUT, --input INPUT
-                        Path to STAR gene counts file. Use one or more times.
-  -o OUTPUT, --output OUTPUT
-                        Path to the merged/formatted output file.
+```sh
+pip install .
 ```
 
-## Merge/Format STAR junctions
+## Development
 
-Takes one or more STAR junctions files from the same sample, adds a header row,
-and merges (only if more than 1 is provided) counts by summing read counts and
-taking the max overhang across files.
-
-```
-usage: gdc-rnaseq-tools merge_star_junctions [-h] -i INPUT -o OUTPUT
-
-Formats and merges STAR junction count files from the same sample.
-
-optional arguments:
-  -h, --help            show this help message and exit
-  -i INPUT, --input INPUT
-                        Path to STAR junction counts file. Use one or more
-                        times.
-  -o OUTPUT, --output OUTPUT
-                        Path to the merged/formatted output file.
-```
+* Clone this repository
+* Requirements:
+  * Python >= 3.8
+  * Tox
+* `make venv` to create a virtualenv
+* `source .venv/bin/activate` to activate new virtualenv
+* `make init` to install dependencies and pre-commit hooks

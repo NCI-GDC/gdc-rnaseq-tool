@@ -3,6 +3,7 @@ files from the same sample.
 
 @author: Kyle Hernandez <kmhernan@uchicago.edu>
 """
+
 from operator import itemgetter
 
 from gdc_rnaseq_tools.utils import get_logger, get_open_function

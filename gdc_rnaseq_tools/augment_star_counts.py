@@ -6,14 +6,13 @@ from typing import List, Optional, Text, Union
 import numpy as np
 import pandas as pd
 
-from gdc_rnaseq_tools.utils import DataError, DataFormatError, get_logger
-from tests import FakeArgs
+from gdc_rnaseq_tools.utils import DataFormatError, FakeArgs, get_logger
 
 
 class ColumnNames(Enum):
     @classmethod
     def cols(cls) -> List[Text]:
-        '''
+        """
         Returns an ordered list of Enum members. Designed to return the
         columns in a specific order for purposes of reading or printing.
 
@@ -22,52 +21,52 @@ class ColumnNames(Enum):
 
         Returns:
             list of column names as strings
-        '''
+        """
         return [member.value for member in cls]
 
 
 class CountsColumns(ColumnNames):
-    GENE_ID = 'gene_id'
-    UNSTRANDED = 'unstranded'
-    STRANDED_FIRST = 'stranded_first'
-    STRANDED_SECOND = 'stranded_second'
+    GENE_ID = "gene_id"
+    UNSTRANDED = "unstranded"
+    STRANDED_FIRST = "stranded_first"
+    STRANDED_SECOND = "stranded_second"
 
 
 class GeneInfoColumns(ColumnNames):
-    GENE_ID = 'gene_id'
-    TOTAL_EXON_LENGTH = 'total_exon_length'
-    GENE_NAME = 'gene_name'
-    GENE_TYPE = 'gene_type'
-    CHROMOSOME = 'chromosome'
+    GENE_ID = "gene_id"
+    TOTAL_EXON_LENGTH = "total_exon_length"
+    GENE_NAME = "gene_name"
+    GENE_TYPE = "gene_type"
+    CHROMOSOME = "chromosome"
 
 
 class MergedColumns(ColumnNames):
-    GENE_ID = 'gene_id'
-    TOTAL_EXON_LENGTH = 'total_exon_length'
-    GENE_NAME = 'gene_name'
-    GENE_TYPE = 'gene_type'
-    CHROMOSOME = 'chromosome'
-    UNSTRANDED = 'unstranded'
-    STRANDED_FIRST = 'stranded_first'
-    STRANDED_SECOND = 'stranded_second'
+    GENE_ID = "gene_id"
+    TOTAL_EXON_LENGTH = "total_exon_length"
+    GENE_NAME = "gene_name"
+    GENE_TYPE = "gene_type"
+    CHROMOSOME = "chromosome"
+    UNSTRANDED = "unstranded"
+    STRANDED_FIRST = "stranded_first"
+    STRANDED_SECOND = "stranded_second"
 
 
 class FinalColumns(ColumnNames):
-    GENE_ID = 'gene_id'
-    GENE_NAME = 'gene_name'
-    GENE_TYPE = 'gene_type'
-    UNSTRANDED = 'unstranded'
-    STRANDED_FIRST = 'stranded_first'
-    STRANDED_SECOND = 'stranded_second'
-    TPM_UNSTRANDED = 'tpm_unstranded'
-    FPKM_UNSTRANDED = 'fpkm_unstranded'
-    FPKM_UQ_UNSTRANDED = 'fpkm_uq_unstranded'
+    GENE_ID = "gene_id"
+    GENE_NAME = "gene_name"
+    GENE_TYPE = "gene_type"
+    UNSTRANDED = "unstranded"
+    STRANDED_FIRST = "stranded_first"
+    STRANDED_SECOND = "stranded_second"
+    TPM_UNSTRANDED = "tpm_unstranded"
+    FPKM_UNSTRANDED = "fpkm_unstranded"
+    FPKM_UQ_UNSTRANDED = "fpkm_uq_unstranded"
 
 
 def load_table(
     table_filename: Text, colnames: Optional[List[Text]] = None
 ) -> pd.DataFrame:
-    '''
+    """
     Loads tabular data into a DataFrame.
 
     Args:
@@ -75,13 +74,13 @@ def load_table(
         colnames: a list of column names to be used when the table has no column headers.
     Returns:
         pandas DataFrame
-    '''
+    """
 
-    return pd.read_table(table_filename, names=colnames, comment='#')
+    return pd.read_table(table_filename, names=colnames, comment="#")
 
 
 def validate_table(df: pd.DataFrame, expected_columns: List[Text]) -> None:
-    '''
+    """
     Verifies that the table has exactly the expected columns
 
     Args:
@@ -90,13 +89,13 @@ def validate_table(df: pd.DataFrame, expected_columns: List[Text]) -> None:
     Returns:
         None
     Throws
-    '''
+    """
     if set(expected_columns) - set(df.columns) != set():
-        raise DataFormatError('Expected columns not found')
+        raise DataFormatError("Expected columns not found")
 
 
 def merge_tables(df1: pd.DataFrame, df2: pd.DataFrame, on: Text) -> pd.DataFrame:
-    '''
+    """
     Performs an inner-join on data frames
 
     Args:
@@ -105,13 +104,13 @@ def merge_tables(df1: pd.DataFrame, df2: pd.DataFrame, on: Text) -> pd.DataFrame
         on: common column name used to join data frames
     Returns:
         A pandas.DataFrame created by joining on the key
-    '''
+    """
 
-    return pd.merge(df1, df2, on=on, how='inner')
+    return pd.merge(df1, df2, on=on, how="inner")
 
 
 def get_extras(df: pd.DataFrame) -> pd.DataFrame:
-    '''
+    """
     STAR counts have 4 extra lines at the top reporting unmapped,
     multimapping, noFeature, and ambiguous reads. These are excluded
     by the join operation for calculations but must be added back in
@@ -121,13 +120,13 @@ def get_extras(df: pd.DataFrame) -> pd.DataFrame:
         df: the counts data frame
     Returns:
         pandas.DataFrame containing misaligned reads stats
-    '''
+    """
 
     return df.iloc[0:4].copy()
 
 
 def calc_tpm(expression: pd.Series, feature_effective_length: pd.Series) -> pd.Series:
-    '''
+    """
     Transcripts Per Million
 
     Calculate the TPM values for all genes
@@ -145,7 +144,7 @@ def calc_tpm(expression: pd.Series, feature_effective_length: pd.Series) -> pd.S
 
     Returns:
         pandas.Series containing the calculated TPM values
-    '''
+    """
     # RPK - reads per thousand bp of transcript length
     rpk = expression * 1e3 / feature_effective_length
     # sum of RPK signal
@@ -158,7 +157,7 @@ def calc_tpm(expression: pd.Series, feature_effective_length: pd.Series) -> pd.S
 def calc_fpkm(
     expression: pd.Series, feature_effective_length: pd.Series, gene_type: pd.Series
 ) -> pd.Series:
-    '''
+    """
     Fragments Per Kilobases (of transcript) and Millions (of fragments)
 
     Calculate the FPKM values for all genes
@@ -172,9 +171,9 @@ def calc_fpkm(
         expression: raw counts of aligned reads
         feature_effective_length: lengths of unified exons of each gene
         gene_type: gene biotypes used for calculating sum of expression of protein coding genes
-    '''
+    """
     # select protein coding genes
-    sel = gene_type == 'protein_coding'
+    sel = gene_type == "protein_coding"
     # get sum of counts in protein coding genes
     N = expression.loc[sel].sum()
     # calculate fpkm
@@ -189,7 +188,7 @@ def calc_fpkm_uq(
     gene_type: pd.Series,
     chromosome: pd.Series,
 ) -> pd.Series:
-    '''
+    """
     Upper Quartile normalized FPKM
 
         FPKM-UQ = (C × 1e9)/(UGL)
@@ -204,10 +203,10 @@ def calc_fpkm_uq(
         feature_effective_length: lengths of unified exons of each gene
         gene_type: gene biotypes used for calculating sum of expression of protein coding genes
         chromosome: chromosome name on which gene is found
-    '''
+    """
     # selections for U and G
-    sel_prot = gene_type == 'protein_coding'
-    sel_autosomes = ~chromosome.isin(['chrX', 'chrY', 'chrM'])
+    sel_prot = gene_type == "protein_coding"
+    sel_autosomes = ~chromosome.isin(["chrX", "chrY", "chrM"])
     sel_nonzero = expression > 0
     # combine selections
     sel_U = sel_prot & sel_autosomes & sel_nonzero
@@ -225,19 +224,19 @@ def calc_fpkm_uq(
 def save_result(
     df: pd.DataFrame, outfile: Text, gencode_version: Optional[int] = None
 ) -> None:
-    '''
+    """
     Write output table as TSV with 4 places of floating point precision
 
     Args:
         df: final results table
         outfile: output file name
         pragma_line: informational line to be added to top of output file
-    '''
+    """
 
-    with open(outfile, 'w') as out:
+    with open(outfile, "w") as out:
         if gencode_version is not None:
-            out.write('# gene-model: GENCODE v{}\n'.format(gencode_version))
-        df.to_csv(out, sep='\t', header=True, index=False, float_format='%.4f')
+            out.write("# gene-model: GENCODE v{}\n".format(gencode_version))
+        df.to_csv(out, sep="\t", header=True, index=False, float_format="%.4f")
 
 
 def augment(
@@ -247,7 +246,7 @@ def augment(
     gencode_version: int,
     logger: logging.Logger,
 ) -> None:
-    '''
+    """
     Augment STAR read counts with normalized counts and gene info
 
     Adds gene names and gene bio-types from data extracted from a GENCODE gtf
@@ -262,7 +261,7 @@ def augment(
         outfile: output file name
         pragma_line: free-text string to be added to top of results file
         logger: logging.Logger object used to communicate messages
-    '''
+    """
 
     # load data
     logger.info("Reading counts file {}".format(counts_file))

@@ -1,25 +1,28 @@
-FROM quay.io/ncigdc/bio-python:3.6 as builder
+ARG REGISTRY=docker.osdc.io/ncigdc
+ARG BASE_CONTAINER_VERSION=latest
 
-COPY ./ /opt
+FROM ${REGISTRY}/python3.8-builder:${BASE_CONTAINER_VERSION} as builder
 
-WORKDIR /opt
+COPY ./ /gdc_rnaseq_tools
 
-RUN python -m pip install tox && tox
+WORKDIR /gdc_rnaseq_tools
 
-# tox step builds sdist
+RUN pip install tox && tox -e build
 
-FROM quay.io/ncigdc/bio-python:3.6
+FROM ${REGISTRY}/python3.8:${BASE_CONTAINER_VERSION}
 
-COPY --from=builder /opt/dist/*.tar.gz /opt
-COPY ./requirements.txt /opt/requirements.txt
+LABEL org.opencontainers.image.title="gdc_rnaseq_tools" \
+      org.opencontainers.image.description="Utility scripts for GDC RNA-seq workflows. The docker file also installs Trimmomatic and fqvendorfail." \
+      org.opencontainers.image.source="https://github.com/NCI-GDC/gdc-rnaseq-tool" \
+      org.opencontainers.image.vendor="NCI GDC"
 
-WORKDIR /opt
+COPY --from=builder /gdc_rnaseq_tools/dist/*.whl /gdc_rnaseq_tools/
+COPY requirements.txt /gdc_rnaseq_tools/
 
-# Install package from sdist
-RUN pip install -r requirements.txt \
-	&& pip install *.tar.gz \
-	&& rm -rf *.tar.gz requirements.txt
+WORKDIR /gdc_rnaseq_tools
 
-ENTRYPOINT ["gdc_rnaseq_tools"]
+RUN pip install --no-deps -r requirements.txt \
+	&& pip install --no-deps *.whl \
+	&& rm -f *.whl requirements.txt
 
-CMD ["--help"]
+CMD ["gdc_rnaseq_tools --help"]
