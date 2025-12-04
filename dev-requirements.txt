@@ -117,3 +117,5 @@ zipp==3.4.1
     # via
     #   importlib-metadata
     #   importlib-resources
+flit==3.10.1
+flit_core==3.10.1
