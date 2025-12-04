@@ -7,7 +7,9 @@ import numpy as np
 import pandas as pd
 
 from gdc_rnaseq_tools.utils import DataFormatError, get_logger
-from tests.fakearg import FakeArgs
+
+# from tests.fakearg import FakeArgs
+from tests import FakeArgs
 
 
 class ColumnNames(Enum):
