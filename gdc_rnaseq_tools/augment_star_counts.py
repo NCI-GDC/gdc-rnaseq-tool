@@ -7,16 +7,7 @@ import numpy as np
 import pandas as pd
 
 from gdc_rnaseq_tools.utils import DataFormatError, get_logger
-
-# from tests.fakearg import FakeArgs
-try:
-    from tests.fakearg import FakeArgs
-except ImportError:
-
-    class FakeArgs:
-        """Fallback FakeArgs for runtime environments without tests/."""
-
-        pass
+from tests.fakearg import FakeArgs
 
 
 class ColumnNames(Enum):
