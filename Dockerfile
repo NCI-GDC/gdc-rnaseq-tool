@@ -25,6 +25,7 @@ RUN pip install --no-deps -r requirements.txt \
 	&& pip install --no-deps *.whl \
 	&& rm -f *.whl requirements.txt
 
-USER app
+#USER app
+ENTRYPOINT ["gdc_rnaseq_tools"]
 
 CMD ["--help"]
