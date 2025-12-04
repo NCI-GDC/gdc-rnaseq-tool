@@ -7,7 +7,8 @@ import numpy as np
 import pandas as pd
 
 from gdc_rnaseq_tools.utils import DataFormatError, get_logger
-from tests.fakearg import FakeArgs
+
+# from tests.fakearg import FakeArgs
 
 
 class ColumnNames(Enum):
@@ -311,12 +312,13 @@ def augment(
     save_result(df=final, outfile=outfile, gencode_version=gencode_version)
 
 
-def main(args: Union[FakeArgs, Namespace]) -> None:
+def main(args: Union[Namespace, object]) -> None:
     """
     Main entrypoint for augment_counts_table. Maps CLI args to function args
 
     Args:
-        args: generally an argparse.Namespace object, but FakeArgs for testing
+        args: generally an argparse.Namespace object, or any object with
+              attributes input, gene_info, output, gencode_version
     """
     logger = get_logger("augment_counts_table")
     logger.info("Augmenting STAR gene counts file {}.".format(args.input))
@@ -328,3 +330,22 @@ def main(args: Union[FakeArgs, Namespace]) -> None:
         gencode_version=args.gencode_version,
         logger=logger,
     )
+
+
+# def main(args: Union[FakeArgs, Namespace]) -> None:
+#    """
+#    Main entrypoint for augment_counts_table. Maps CLI args to function args#
+
+#    Args:
+#        args: generally an argparse.Namespace object, but FakeArgs for testing
+#    """
+#    logger = get_logger("augment_counts_table")
+#    logger.info("Augmenting STAR gene counts file {}.".format(args.input))
+
+#    augment(
+#        counts_file=args.input,
+#        gene_info_file=args.gene_info,
+#        outfile=args.output,
+#        gencode_version=args.gencode_version,
+#        logger=logger,
+#    )
