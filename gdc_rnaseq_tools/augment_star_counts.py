@@ -1,7 +1,7 @@
 import logging
 from argparse import Namespace
 from enum import Enum
-from typing import List, Optional, Text
+from typing import List, Optional, Text, Union
 
 import numpy as np
 import pandas as pd
@@ -9,6 +9,14 @@ import pandas as pd
 from gdc_rnaseq_tools.utils import DataFormatError, get_logger
 
 # from tests.fakearg import FakeArgs
+try:
+    from tests.fakearg import FakeArgs
+except ImportError:
+
+    class FakeArgs:
+        """Fallback FakeArgs for runtime environments without tests/."""
+
+        pass
 
 
 class ColumnNames(Enum):
@@ -312,8 +320,7 @@ def augment(
     save_result(df=final, outfile=outfile, gencode_version=gencode_version)
 
 
-# def main(args: Union[FakeArgs, Namespace]) -> None:
-def main(args: Namespace) -> None:
+def main(args: Union[FakeArgs, Namespace]) -> None:
     """
     Main entrypoint for augment_counts_table. Maps CLI args to function args
 
