@@ -25,4 +25,5 @@ RUN pip install --no-deps -r requirements.txt \
 	&& pip install --no-deps *.whl \
 	&& rm -f *.whl requirements.txt
 
-CMD ["gdc_rnaseq_tools --help"]
+#CMD ["gdc_rnaseq_tools --help"]
+CMD ["gdc_rnaseq_tools", "--help"]
