@@ -4,7 +4,7 @@ import unittest
 from collections import OrderedDict
 
 from gdc_rnaseq_tools.merge_counts import load_star_file, main, merge_star_counts
-from tests import FakeArgs
+from tests.fakearg import FakeArgs
 
 
 class TestMergeStarGeneCounts(unittest.TestCase):
@@ -25,7 +25,7 @@ class TestMergeStarGeneCounts(unittest.TestCase):
     )
     to_remove = []
 
-    def test_merge_star_counts(self):
+    def test_merge_star_counts(self) -> None:
         """
         Tests the `merge_star_counts` function.
         """
@@ -45,7 +45,7 @@ class TestMergeStarGeneCounts(unittest.TestCase):
         with self.assertRaises(StopIteration):
             key, counts = next(giter)
 
-    def test_load_star_file(self):
+    def test_load_star_file(self) -> None:
         """
         Tests loading the staged STAR counts file.
         """
@@ -64,7 +64,7 @@ class TestMergeStarGeneCounts(unittest.TestCase):
         expected["CCCC"] = [[10, 10, 10], [10, 0, 20]]
         self.assertEqual(expected, dic)
 
-    def test_full_single(self):
+    def test_full_single(self) -> None:
         """
         Tests from main() entry for single star file.
         """
@@ -81,7 +81,7 @@ class TestMergeStarGeneCounts(unittest.TestCase):
             self.assertEqual(exp, found)
         os.remove(args.output)
 
-    def test_full_merge(self):
+    def test_full_merge(self) -> None:
         """
         Tests from main() entry for single star file.
         """
@@ -98,10 +98,10 @@ class TestMergeStarGeneCounts(unittest.TestCase):
             self.assertEqual(exp, found)
         os.remove(args.output)
 
-    def setUp(self):
+    def setUp(self) -> None:
         pass
 
-    def tearDown(self):
+    def tearDown(self) -> None:
         for fil in self.to_remove:
             if os.path.exists(fil):
                 os.remove(fil)

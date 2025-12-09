@@ -1,17 +1,133 @@
 [build-system]
-requires = ["setuptools>=42", "wheel", "setuptools_scm[toml]>=6.0"]
-build-backend = "setuptools.build_meta"
+requires = ["flit_scm", "setuptools_scm"]
+build-backend = "flit_scm:buildapi"
+
+[project]
+name = "gdc-rnaseq-tool"
+description = "Utility scripts for GDC RNA-seq workflows. The docker file also installs Trimmomatic and fqvendorfail."
+authors = [
+    {name = "Linghao Song", email = "linghao@uchicago.edu"}
+]
+
+readme = "README.md"
+requires-python = ">=3.8"
+license = {file = "LICENSE"}
+classifiers = [
+    "License :: OSI Approved :: Apache Software License",
+	"Programming Language :: Python :: 3",
+	"Programming Language :: Python :: 3 :: Only"
+]
+dynamic = ["version"]
+dependencies = [
+    "click",
+    "numpy",
+    "pandas"
+]
+
+[project.optional-dependencies]
+build = [
+  "setuptools_scm",
+  "flit",
+  "twine",
+]
+
+dev = [
+    "black",
+    "detect-secrets==1.4.0",
+    "ruff",
+    "mypy",
+    "pre-commit>=3.5.0",
+    "tox",
+]
+
+test = [
+    "coverage[toml]",
+    "pytest",
+]
+
+type = [
+    "types-click",
+]
+
+[project.urls]
+homepage = "https://github.com/NCI-GDC/gdc-rnaseq-tool"
+
+[project.scripts]
+"gdc_rnaseq_tools" = "gdc_rnaseq_tools.__main__:main"
 
 [tool.setuptools_scm]
-local_scheme = "dirty-tag"
-version_scheme = "release-branch-semver"
 write_to = "gdc_rnaseq_tools/_version.py"
+local_scheme = "dirty-tag"
+version_scheme = "python-simplified-semver"
 fallback_version = "0"
 
-[tool.black]
-line-length = 88
-skip-string-normalization = true
-target-version = ['py36']
+[tool.coverage.run]
+source = ["gdc_rnaseq_tools"]
+branch = true
+parallel = true
 
-[flake8]
-max-line-length = 88
+[tool.flit.module]
+name = "gdc_rnaseq_tools"
+
+[tool.flit.sdist]
+include = ["gdc_rnaseq_tools/_version.py"]
+exclude = [
+        ".*",
+        "dev-requirements.*",
+        "Dockerfile",
+        "Jenkinsfile",
+        "*travis.yml",
+        "tox.ini",
+]
+
+[tool.mypy]
+python_version = 3.8
+disallow_untyped_defs = true
+warn_return_any = true
+warn_unused_configs = true
+
+[tool.coverage.report]
+show_missing = true
+
+[tool.ruff]
+# Enable pycodestyle (`E`) and Pyflakes (`F`) codes by default.
+lint.select = ["E", "F"]
+lint.ignore = ["E501"]
+
+# Allow autofix for all enabled rules (when `--fix`) is provided.
+lint.fixable = ["A", "B", "C", "D", "E", "F", "I"]
+lint.unfixable = []
+
+# Exclude a variety of commonly ignored directories.
+exclude = [
+    ".bzr",
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".mypy_cache",
+    ".pytype",
+    ".ruff_cache",
+    ".tox",
+    ".venv",
+    "__pypackages__",
+    "_build",
+    "build",
+    "dist",
+    "node_modules",
+    "venv",
+]
+
+# Same as Black.
+line-length = 88
+
+# Allow unused variables when underscore-prefixed.
+lint.dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+
+target-version = 'py38'
+
+[tool.ruff.lint.mccabe]
+# Unlike Flake8, default to a complexity level of 10.
+max-complexity = 10
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["E402"]

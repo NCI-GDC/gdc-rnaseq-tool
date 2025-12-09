@@ -1,14 +1,13 @@
 import gzip
 import os
 import unittest
-from collections import OrderedDict
 
 from gdc_rnaseq_tools.merge_junctions import (
     StarJunctionRecord,
     load_junction_file,
     main,
 )
-from tests import FakeArgs
+from tests.fakearg import FakeArgs
 
 
 class TestMergeStarJunctions(unittest.TestCase):
@@ -29,7 +28,7 @@ class TestMergeStarJunctions(unittest.TestCase):
     )
     to_remove = []
 
-    def test_star_junction_record(self):
+    def test_star_junction_record(self) -> None:
         """
         Tests the `StarJunctionRecord` class.
         """
@@ -46,7 +45,7 @@ class TestMergeStarJunctions(unittest.TestCase):
         self.assertEqual(23, rec.max_splice_overhang)
         self.assertEqual(("chr1", 100, 200, 1, 1, 1), rec.key)
 
-    def test_star_junction_record_funcs(self):
+    def test_star_junction_record_funcs(self) -> None:
         """
         Tests the `StarJunctionRecord` class functions.
         """
@@ -71,7 +70,7 @@ class TestMergeStarJunctions(unittest.TestCase):
         with self.assertRaises(AssertionError):
             rec1 += rec3
 
-    def test_load_junction_file(self):
+    def test_load_junction_file(self) -> None:
         """
         Tests the load_junction_file function.
         """
@@ -88,7 +87,7 @@ class TestMergeStarJunctions(unittest.TestCase):
         found = dic[tuple(dat2[:6])]
         self.assertEqual(tuple(dat2[:6]), found.key)
 
-    def test_load_multi_junction_file(self):
+    def test_load_multi_junction_file(self) -> None:
         """
         Tests the load_junction_file function for multiple inputs.
         """
@@ -117,7 +116,7 @@ class TestMergeStarJunctions(unittest.TestCase):
         self.assertEqual(3, dic[dat2_3].n_multi_mapped)
         self.assertEqual(23, dic[dat2_3].max_splice_overhang)
 
-    def test_full_junction_single(self):
+    def test_full_junction_single(self) -> None:
         """
         Tests the the whole main() function of junction merge for
         a single file.
@@ -135,7 +134,7 @@ class TestMergeStarJunctions(unittest.TestCase):
             self.assertEqual(exp, found)
         os.remove(args.output)
 
-    def test_full_junction_merge(self):
+    def test_full_junction_merge(self) -> None:
         """
         Tests from main() entry for single star file.
         """
@@ -152,10 +151,10 @@ class TestMergeStarJunctions(unittest.TestCase):
             self.assertEqual(exp, found)
         os.remove(args.output)
 
-    def setUp(self):
+    def setUp(self) -> None:
         pass
 
-    def tearDown(self):
+    def tearDown(self) -> None:
         for fil in self.to_remove:
             if os.path.exists(fil):
                 os.remove(fil)
