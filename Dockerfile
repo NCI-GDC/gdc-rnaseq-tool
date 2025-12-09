@@ -1,7 +1,7 @@
 ARG REGISTRY=docker.osdc.io/ncigdc
 ARG BASE_CONTAINER_VERSION=latest
 
-FROM ${REGISTRY}/python3.8-builder:${BASE_CONTAINER_VERSION} as builder
+FROM ${REGISTRY}/python3.9-builder:${BASE_CONTAINER_VERSION} as builder
 
 COPY ./ /gdc_rnaseq_tools
 
@@ -9,7 +9,7 @@ WORKDIR /gdc_rnaseq_tools
 
 RUN pip install tox && tox -e build
 
-FROM ${REGISTRY}/python3.8:${BASE_CONTAINER_VERSION}
+FROM ${REGISTRY}/python3.9:${BASE_CONTAINER_VERSION}
 
 LABEL org.opencontainers.image.title="gdc_rnaseq_tools" \
       org.opencontainers.image.description="Utility scripts for GDC RNA-seq workflows. The docker file also installs Trimmomatic and fqvendorfail." \
